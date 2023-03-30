@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main">
+    <div class="container">
+        <h1 class="my-5">{{ object.title }}</h1>
+        <small>
+            {{ object.author }} |
+            <span>created: {{ object.created_on|date:"N j Y" }} </span> |
+            <span>updated: {{ object.updated_on|timesince }} ago </span>
+            <br>
+            {% if user.is_authenticated %}
+                {% if object.author == request.user %}
+                    <a href="{% url 'blog_edit' object.slug %}">edit entry</a> -
+                    <a href="{% url 'blog_delete' object.slug %}">delete entry</a>
+                {% endif %}
+            {% endif %}
+        </small>
+        <div class="card">
+          <img src={{object.imageUrl}} class="img-fluid">
+          <div class="card-footer text-muted">
+           {{ object.imageCaption }}
+          </div>
+        </div>
+        <div class="mt-3">
+            <p>{{ object.summary }}</p>
+        </div><hr>
+            {{ object.description|safe }}<br/>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,16 @@
+<!-- templates/post_new.html -->
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block header %}<h2>New post</h2>{% endblock header %}
+{% block content %}
+<div class="container">
+    <hr>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.media }}
+        {{ form|crispy}}
+        <button name='submit' class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock content %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block header %}
+    <h2>Delete post</h2>
+{% endblock header %}
+{% block content %}
+<div class="container">
+    <hr>
+    <form action="" method="post">{% csrf_token %}
+        <p>Are you sure you want to delete "{{ post.title }}"?</p>
+        <input type="submit" value="Confirm" class="btn btn-primary">
+        <a href="{% url 'blog_detail' object.slug %}" class="btn btn-danger">Cancel</a>
+    </form>
+</div>
+{% endblock content %}
