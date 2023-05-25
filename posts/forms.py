@@ -1,6 +1,5 @@
 from django.forms import ModelForm
 from .models import Blogpost
-from django import forms
 
 
 class ListingForm(ModelForm):

@@ -22,19 +22,6 @@ def profile(request, username):
     return render(request, 'base.html', {'profile': profile, 'user': user})
 
 
-# def userpage(request):
-#     if request.method == "POST":
-#         user_form = UserForm(request.POST, instance=request.user)
-#         if user_form.is_valid():
-#             user_form.save()
-#             messages.success(request, 'Your profile was successfully updated!')
-#         else:
-#             messages.error(request, 'Unable to complete request')
-#         return redirect("/")
-#     user_form = UserForm(instance=request.user)
-#     return render(request=request, template_name="edit_profile.html", context={"user": request.user,
-#                                                                        "user_form": user_form, })
-
 @login_required
 def edit_profile(request):
     if request.method == "POST":

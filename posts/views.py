@@ -1,11 +1,9 @@
-from urllib import request
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, EmptyPage
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import TemplateView, DetailView, CreateView, UpdateView, DeleteView, ListView
 
 from posts.models import Blogpost, Bannerpost, Categories
 
@@ -86,6 +84,10 @@ class BlogUpdateView(LoginRequiredMixin, UpdateView):  # new
     template_name = 'blog_edit.html'
     fields = ['title', 'summary', 'imageUrl', 'imageCaption', 'description', 'category']
 
+    def __init__(self, **kwargs):
+        super().__init__(kwargs)
+        self.object = None
+
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         if self.object.author != self.request.user:
@@ -99,8 +101,29 @@ class BlogDeleteView(LoginRequiredMixin, DeleteView):  # new
     template_name = 'blog_delete.html'
     success_url = reverse_lazy('home')
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(args, kwargs)
+        self.object = None
+
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         if self.object.author != self.request.user:
             raise Http404
         return super().post(request, *args, **kwargs)
+
+
+class CatListView(ListView):
+    template_name = 'catlist.html'
+    queryset = Categories.objects.all()
+
+
+def category_posts(request, category_id):
+    category = Categories.objects.get(id=category_id)
+    posts = Blogpost.objects.filter(category=category)
+    context = {
+        'category': category,
+        'posts': posts
+    }
+    return render(request, 'category.html', context)
+
+

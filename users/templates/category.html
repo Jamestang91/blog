@@ -1,17 +1,38 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
-{% load crispy_forms_filters %}
-{% block header %}
-    <h2>Categories</h2>
-{% endblock header %}
 {% block content %}
-<div class="container">
-    <hr>
-    <ul>
-    {% for category in object_list %}
-        <li>{{ category.category_name }}</li>
-    {% endfor %}
-    </ul>
+<div class="album py-5 bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 pb-5">
+        <h1> List of {{category.category_name}} posts</h1>
+      </div>
+      {% for post in posts %}
+      <div class="col-xs-9 col-md-9 col-lg-6 pt-2">
+            <div class="card h-100">
+              <img class="card-img-top h-50 p-3" src="{{ post.imageUrl }}"  alt="{{ post.title }}">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ post.title }}</h5>
+                <div class="text-muted mb-3">
+                  <div>
+                    <span>created: {{ post.created_on|date:"N j Y" }} |</span>
+                    <span>updated: {{ post.updated_on|timesince }} ago </span>
+                    <p>
+                    author: {{ post.author }} |
+                    <span class="badge badge-dark">{{ post.category }}</span>
+                    </p>
+                  </div>
+                </div>
+                <p class="card-text">{{ post.summary|truncatewords:20 }}</p>
+                <div class="row justify-content-end mt-auto">
+                    <a class="btn btn-outline-primary" href="{{ post.get_absolute_url }}">Read more ...</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% empty %}
+            <div  class="justify-content-start">
+                <br><h2>Sorry, there is articles for this category</h2>
+            </div>
+        {% endfor %}
 
-</div>
 {% endblock content %}
