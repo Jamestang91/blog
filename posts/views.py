@@ -1,10 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, EmptyPage
+from django.db.models import Q
 from django.http import Http404
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, DetailView, CreateView, UpdateView, DeleteView, ListView
 
+from posts.forms import BlogSearchForm
 from posts.models import Blogpost, Bannerpost, Categories
 
 
@@ -84,10 +86,6 @@ class BlogUpdateView(LoginRequiredMixin, UpdateView):  # new
     template_name = 'blog_edit.html'
     fields = ['title', 'summary', 'imageUrl', 'imageCaption', 'description', 'category']
 
-    def __init__(self, **kwargs):
-        super().__init__(kwargs)
-        self.object = None
-
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         if self.object.author != self.request.user:
@@ -100,10 +98,6 @@ class BlogDeleteView(LoginRequiredMixin, DeleteView):  # new
     model = Blogpost
     template_name = 'blog_delete.html'
     success_url = reverse_lazy('home')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(args, kwargs)
-        self.object = None
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -127,3 +121,11 @@ def category_posts(request, category_id):
     return render(request, 'category.html', context)
 
 
+def blog_search(request):
+    if request.method == "POST":
+        post_search = request.POST.get('post_search')
+        posts = Blogpost.objects.filter(
+            Q(title__contains=post_search) | Q(summary__icontains=post_search) | Q(description=post_search))
+        return render(request, 'search.html', {'post_search': post_search, 'posts': posts})
+    else:
+        return render(request, 'search.html', {})

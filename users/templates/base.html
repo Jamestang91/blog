@@ -66,9 +66,10 @@
                 {% endif %}
                 </ul>
             </div>
-            <form class="d-inline-flex" method="GET">
-                <input class="form-control me-2" name="search-area" type="text" value="{{search_input}}">
-                <button class="btn btn-outline-success" type="submit" value="Search">Search</button>
+            <form class="d-flex" method="post" action="{% url 'blog_search' %}" autocomplete="off">
+                {% csrf_token %}
+                <input type="text" name="post_search" class="form-control me-2 rounded" placeholder="Search">
+                <button type="submit" name="submit" value="Search" class="btn btn-outline-primary">Search</button>
             </form>
         </div>
     </nav>
@@ -77,6 +78,7 @@
             {% block header %}{% endblock header %}
         </div>
     </div>
+
 
     {% block content %}{% endblock content %}
 
